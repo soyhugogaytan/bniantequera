@@ -107,6 +107,21 @@
     transform:translateY(-3px);
     box-shadow:0 10px 24px rgba(0,0,0,.1);
   }
+  .card .top-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+  }
+  .card .photo{
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    object-fit:cover;
+    flex-shrink:0;
+    border:2px solid var(--rojo);
+    background:var(--gris);
+  }
   .card h3{
     margin:0 0 4px;
     font-size:18px;
@@ -305,8 +320,13 @@ function cardTemplate(m,i){
   const link = m.whatsapp;
   return `
   <div class="card" data-id="${m.id}" style="animation-delay:${Math.min(i*0.04,0.4)}s">
-    <h3>${m.nombre}</h3>
-    <div class="empresa">${m.empresa || ''}</div>
+    <div class="top-row">
+      <div>
+        <h3>${m.nombre}</h3>
+        <div class="empresa">${m.empresa || ''}</div>
+      </div>
+      <img class="photo" src="assets/photos/${m.id}.png" alt="${m.nombre}" loading="lazy" onerror="this.style.display='none'">
+    </div>
     <div class="meta">
       <span>Categoría: <b>${m.categoria || '—'}</b></span>
       <span>Capítulo: <b>${m.capitulo || '—'}</b></span>
