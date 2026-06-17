@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BNI Oaxaca · Centro de Recomendaciones</title>
+<style>
+  :root{
+    --rojo:#A21D21;
+    --rojo-oscuro:#6D0F12;
+    --rojo-hover:#C62828;
+    --blanco:#FFFFFF;
+    --gris:#F5F5F5;
+    --texto:#333333;
+    --verde:#2E7D32;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--gris);
+    color:var(--texto);
+  }
+  header{
+    background:linear-gradient(135deg,var(--rojo) 0%,var(--rojo-oscuro) 100%);
+    color:var(--blanco);
+    text-align:center;
+    padding:36px 16px 48px;
+  }
+  header .logo{
+    font-size:14px;
+    letter-spacing:2px;
+    opacity:.85;
+    margin-bottom:8px;
+  }
+  header h1{
+    margin:0;
+    font-size:28px;
+    letter-spacing:1px;
+  }
+  header h2{
+    margin:4px 0 12px;
+    font-size:16px;
+    font-weight:600;
+    letter-spacing:1px;
+    opacity:.95;
+  }
+  header p{
+    margin:0;
+    font-size:14px;
+    opacity:.85;
+  }
+  .container{
+    max-width:880px;
+    margin:-28px auto 0;
+    padding:0 16px 60px;
+  }
+  .search-box{
+    background:var(--blanco);
+    border-radius:14px;
+    box-shadow:0 6px 24px rgba(0,0,0,.12);
+    padding:16px;
+  }
+  .search-box input{
+    width:100%;
+    padding:14px 16px;
+    font-size:16px;
+    border:2px solid #eee;
+    border-radius:10px;
+    outline:none;
+    transition:border-color .15s;
+  }
+  .search-box input:focus{
+    border-color:var(--rojo);
+  }
+  .chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:14px;
+  }
+  .chip{
+    padding:7px 14px;
+    border-radius:20px;
+    background:var(--gris);
+    color:var(--texto);
+    font-size:13px;
+    cursor:pointer;
+    border:1px solid transparent;
+    transition:.15s;
+    user-select:none;
+  }
+  .chip:hover{
+    background:#ececec;
+  }
+  .chip.active{
+    background:var(--rojo);
+    color:var(--blanco);
+  }
+  #results{
+    margin-top:22px;
+    display:grid;
+    gap:14px;
+  }
+  .card{
+    background:var(--blanco);
+    border-radius:12px;
+    padding:18px 20px;
+    box-shadow:0 2px 10px rgba(0,0,0,.06);
+    border-left:4px solid var(--rojo);
+  }
+  .card h3{
+    margin:0 0 4px;
+    font-size:18px;
+    letter-spacing:.3px;
+  }
+  .card .empresa{
+    font-size:14px;
+    color:var(--texto);
+    opacity:.85;
+    margin-bottom:8px;
+  }
+  .card .meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    font-size:12.5px;
+    color:#777;
+    margin-bottom:14px;
+  }
+  .card .meta span b{
+    color:var(--texto);
+  }
+  .card .actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .btn{
+    border:none;
+    padding:9px 14px;
+    border-radius:8px;
+    font-size:13px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.15s;
+  }
+  .btn-primary{
+    background:var(--rojo);
+    color:var(--blanco);
+  }
+  .btn-primary:hover{
+    background:var(--rojo-hover);
+  }
+  .btn-secondary{
+    background:var(--gris);
+    color:var(--texto);
+  }
+  .btn-secondary:hover{
+    background:#e8e8e8;
+  }
+  .more-options{
+    display:none;
+    margin-top:14px;
+    border-top:1px solid #eee;
+    padding-top:14px;
+  }
+  .more-options.open{
+    display:block;
+  }
+  .option{
+    background:var(--gris);
+    border-radius:8px;
+    padding:10px 12px;
+    margin-bottom:8px;
+    font-size:13.5px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .option p{
+    margin:0;
+    flex:1;
+    white-space:pre-line;
+  }
+  .custom-box{
+    margin-top:14px;
+    border-top:1px solid #eee;
+    padding-top:14px;
+  }
+  .custom-box label{
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.5px;
+    color:#888;
+    text-transform:uppercase;
+  }
+  .custom-box textarea{
+    width:100%;
+    margin-top:8px;
+    padding:10px 12px;
+    border:2px solid #eee;
+    border-radius:8px;
+    font-size:14px;
+    font-family:inherit;
+    resize:vertical;
+    min-height:60px;
+    outline:none;
+  }
+  .custom-box textarea:focus{
+    border-color:var(--rojo);
+  }
+  .custom-box .gen-row{
+    margin-top:8px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .custom-result{
+    display:none;
+    margin-top:10px;
+    background:var(--gris);
+    border-radius:8px;
+    padding:10px 12px;
+    font-size:13.5px;
+    white-space:pre-line;
+  }
+  .custom-result.show{
+    display:block;
+  }
+  #empty{
+    text-align:center;
+    color:#999;
+    padding:40px 0;
+    display:none;
+  }
+  #toast{
+    position:fixed;
+    bottom:24px;
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--verde);
+    color:var(--blanco);
+    padding:12px 22px;
+    border-radius:30px;
+    font-size:14px;
+    font-weight:600;
+    box-shadow:0 6px 18px rgba(0,0,0,.2);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s, transform .25s;
+    z-index:999;
+  }
+  #toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+  .count{
+    text-align:center;
+    font-size:12.5px;
+    color:#999;
+    margin-top:14px;
+  }
+  @media (max-width:480px){
+    .card .actions{flex-direction:column;}
+    .btn{width:100%;text-align:center;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">BNI</div>
+  <h1>BNI OAXACA</h1>
+  <h2>CENTRO DE RECOMENDACIONES</h2>
+  <p>Encuentra miembros, copia recomendaciones y genera más negocios.</p>
+</header>
+
+<div class="container">
+  <div class="search-box">
+    <input id="search" type="text" placeholder="🔍 Escribe el nombre, empresa o categoría" autocomplete="off">
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div id="results"></div>
+  <div id="empty">No se encontraron resultados.</div>
+  <div class="count" id="count"></div>
+</div>
+
+<div id="toast">✅ Copiado correctamente</div>
+
+<script>
+const CATEGORIAS = ["Todos","Marketing","Seguros","Construcción","Arquitectura","Abogados","Finanzas","Tecnología","Salud","Turismo","Restaurantes"];
+
+let MIEMBROS = [];
+let categoriaActiva = "Todos";
+
+const optionTemplates = [
+  (n,l) => `Te recomiendo ampliamente a ${n}.\n\nExcelente profesional.\n\n${l}`,
+  (n,l) => `Si buscas un especialista confiable te recomiendo a ${n}.\n\n${l}`,
+  (n,l) => `He tenido la oportunidad de conocer su trabajo y lo recomiendo ampliamente.\n\n${l}`,
+  (n,l) => `Forma parte de nuestra red de negocios y es un excelente profesional.\n\n${l}`,
+  (n,l) => `Con gusto te comparto su contacto.\n\n${l}`
+];
+
+function defaultRecommendation(nombre, link){
+  return `Te recomiendo ampliamente a ${nombre.toUpperCase()}.\n\nExcelente profesional y miembro de BNI Oaxaca.\n\nPuedes contactarlo aquí:\n\n${link}`;
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg || '✅ Copiado correctamente';
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=> t.classList.remove('show'), 2200);
+}
+
+function copyText(text, successMsg){
+  navigator.clipboard.writeText(text).then(()=> showToast(successMsg)).catch(()=>{
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast(successMsg);
+  });
+}
+
+function renderChips(){
+  const chips = document.getElementById('chips');
+  chips.innerHTML = CATEGORIAS.map(c =>
+    `<div class="chip ${c===categoriaActiva?'active':''}" data-cat="${c}">${c}</div>`
+  ).join('');
+  chips.querySelectorAll('.chip').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      categoriaActiva = el.dataset.cat;
+      renderChips();
+      renderResults();
+    });
+  });
+}
+
+function filtrar(){
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  return MIEMBROS.filter(m=>{
+    const matchCat = categoriaActiva === "Todos" || m.categoria === categoriaActiva;
+    const matchText = !q ||
+      m.nombre.toLowerCase().includes(q) ||
+      (m.empresa||"").toLowerCase().includes(q) ||
+      (m.categoria||"").toLowerCase().includes(q);
+    return matchCat && matchText;
+  });
+}
+
+function cardTemplate(m){
+  const link = m.whatsapp;
+  return `
+  <div class="card" data-id="${m.id}">
+    <h3>${m.nombre}</h3>
+    <div class="empresa">${m.empresa || ''}</div>
+    <div class="meta">
+      <span>Categoría: <b>${m.categoria || '—'}</b></span>
+      <span>Capítulo: <b>${m.capitulo || '—'}</b></span>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" data-action="copy-wa">Copiar WhatsApp</button>
+      <button class="btn btn-primary" data-action="copy-rec">Copiar Recomendación</button>
+      <button class="btn btn-secondary" data-action="toggle-more">Ver más opciones</button>
+    </div>
+    <div class="more-options">
+      ${optionTemplates.map((fn,i)=>`
+        <div class="option">
+          <p>${fn(m.nombre, link)}</p>
+          <button class="btn btn-secondary" data-action="copy-option" data-idx="${i}">COPIAR</button>
+        </div>
+      `).join('')}
+      <div class="custom-box">
+        <label>Personaliza tu mensaje</label>
+        <textarea placeholder="Agrega aquí un comentario personal... Ej: Me ayudó con mi estrategia digital y obtuve excelentes resultados."></textarea>
+        <div class="gen-row">
+          <button class="btn btn-primary" data-action="generate">GENERAR TEXTO</button>
+        </div>
+        <div class="custom-result"></div>
+        <div class="gen-row custom-copy-row" style="display:none;margin-top:8px;">
+          <button class="btn btn-secondary" data-action="copy-custom">COPIAR TEXTO</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderResults(){
+  const lista = filtrar();
+  const resultsEl = document.getElementById('results');
+  const emptyEl = document.getElementById('empty');
+  const countEl = document.getElementById('count');
+
+  if(lista.length === 0){
+    resultsEl.innerHTML = '';
+    emptyEl.style.display = 'block';
+    countEl.textContent = '';
+    return;
+  }
+  emptyEl.style.display = 'none';
+  resultsEl.innerHTML = lista.map(cardTemplate).join('');
+  countEl.textContent = `${lista.length} miembro${lista.length===1?'':'s'} encontrado${lista.length===1?'':'s'}`;
+}
+
+document.getElementById('results').addEventListener('click', (e)=>{
+  const btn = e.target.closest('button[data-action]');
+  if(!btn) return;
+  const card = btn.closest('.card');
+  const id = Number(card.dataset.id);
+  const m = MIEMBROS.find(x=>x.id===id);
+  const action = btn.dataset.action;
+
+  if(action === 'copy-wa'){
+    copyText(m.whatsapp, '✅ Enlace copiado');
+  } else if(action === 'copy-rec'){
+    copyText(defaultRecommendation(m.nombre, m.whatsapp), '✅ Recomendación copiada');
+  } else if(action === 'toggle-more'){
+    const panel = card.querySelector('.more-options');
+    panel.classList.toggle('open');
+    btn.textContent = panel.classList.contains('open') ? 'Ocultar opciones' : 'Ver más opciones';
+  } else if(action === 'copy-option'){
+    const idx = Number(btn.dataset.idx);
+    const text = optionTemplates[idx](m.nombre, m.whatsapp);
+    copyText(text, '✅ Recomendación copiada');
+  } else if(action === 'generate'){
+    const textarea = card.querySelector('textarea');
+    const resultBox = card.querySelector('.custom-result');
+    const copyRow = card.querySelector('.custom-copy-row');
+    const personal = textarea.value.trim();
+    const finalText = `Te recomiendo ampliamente a ${m.nombre}.\n\n${personal || 'Excelente profesional y miembro de BNI Oaxaca.'}\n\nPuedes contactarlo aquí:\n\n${m.whatsapp}`;
+    resultBox.textContent = finalText;
+    resultBox.classList.add('show');
+    copyRow.style.display = 'flex';
+    resultBox.dataset.text = finalText;
+  } else if(action === 'copy-custom'){
+    const resultBox = card.querySelector('.custom-result');
+    copyText(resultBox.dataset.text || resultBox.textContent, '✅ Texto copiado');
+  }
+});
+
+document.getElementById('search').addEventListener('input', renderResults);
+
+fetch('miembros.json')
+  .then(r => r.json())
+  .then(data => {
+    MIEMBROS = data;
+    renderChips();
+    renderResults();
+  })
+  .catch(()=>{
+    document.getElementById('results').innerHTML = '<p style="text-align:center;color:#999;">No se pudo cargar miembros.json</p>';
+  });
+</script>
+
+</body>
+</html>
