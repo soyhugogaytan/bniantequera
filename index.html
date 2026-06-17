@@ -25,18 +25,13 @@
     background:linear-gradient(135deg,var(--rojo) 0%,var(--rojo-oscuro) 100%);
     color:var(--blanco);
     text-align:center;
-    padding:36px 16px 48px;
+    padding:32px 16px 48px;
   }
-  header .logo{
-    font-size:14px;
-    letter-spacing:2px;
-    opacity:.85;
-    margin-bottom:8px;
-  }
-  header h1{
-    margin:0;
-    font-size:28px;
-    letter-spacing:1px;
+  header .logo-img{
+    max-width:280px;
+    width:60%;
+    height:auto;
+    margin-bottom:6px;
   }
   header h2{
     margin:4px 0 12px;
@@ -271,8 +266,7 @@
 <body>
 
 <header>
-  <div class="logo">BNI</div>
-  <h1>BNI OAXACA</h1>
+  <img class="logo-img" src="assets/bni-antequera-logo.png" alt="BNI Antequera">
   <h2>CENTRO DE RECOMENDACIONES</h2>
   <p>Encuentra miembros, copia recomendaciones y genera más negocios.</p>
 </header>
@@ -291,22 +285,23 @@
 <div id="toast">✅ Copiado correctamente</div>
 
 <script>
-const CATEGORIAS = ["Todos","Marketing","Seguros","Construcción","Arquitectura","Abogados","Finanzas","Tecnología","Salud","Turismo","Restaurantes"];
+let CATEGORIAS = ["Todos"];
 
 let MIEMBROS = [];
 let categoriaActiva = "Todos";
 
 const optionTemplates = [
-  (n,l) => `Te recomiendo ampliamente a ${n}.\n\nExcelente profesional.\n\n${l}`,
-  (n,l) => `Si buscas un especialista confiable te recomiendo a ${n}.\n\n${l}`,
-  (n,l) => `He tenido la oportunidad de conocer su trabajo y lo recomiendo ampliamente.\n\n${l}`,
-  (n,l) => `Forma parte de nuestra red de negocios y es un excelente profesional.\n\n${l}`,
-  (n,l) => `Con gusto te comparto su contacto.\n\n${l}`
+  (n,l) => `Recomiendo ampliamente a ${n} por su profesionalismo y excelentes resultados. *Ponte en contacto, te dejo su WhatsApp.*\n\n${l}`,
+  (n,l) => `Por experiencia propia, puedo recomendar el trabajo de ${n} con total confianza. *Aquí te comparto sus datos.*\n\n${l}`,
+  (n,l) => `${n} es una persona confiable, responsable y orientada a resultados. *No dudes en contactarlo(a), te dejo su información.*\n\n${l}`,
+  (n,l) => `${n} destaca por su profesionalismo, calidad y atención al detalle. *Te comparto su WhatsApp para que puedas contactarlo(a).*\n\n${l}`,
+  (n,l) => `Recomiendo los servicios de ${n} por su compromiso y nivel de excelencia. *Ponte en contacto y conoce cómo puede ayudarte.*\n\n${l}`,
+  (n,l) => `Sin duda, ${n} es una excelente opción para quienes buscan confianza y resultados. *Te dejo sus datos de contacto.*\n\n${l}`,
+  (n,l) => `Compro los productos y servicios de ${n} y los recomiendo ampliamente por su calidad y atención. *Aquí te comparto su información.*\n\n${l}`,
+  (n,l) => `He probado los productos y servicios de ${n} y los recomiendo por su calidad y confiabilidad. *No dudes en ponerte en contacto.*\n\n${l}`,
+  (n,l) => `Cuando necesito este tipo de productos o servicios, ${n} es mi primera opción. *Te dejo su WhatsApp.*\n\n${l}`,
+  (n,l) => `Recomiendo a ${n} por su confianza, calidad y cumplimiento. *Vale la pena conocer su trabajo, aquí te comparto sus datos.*\n\n${l}`
 ];
-
-function defaultRecommendation(nombre, link){
-  return `Te recomiendo ampliamente a ${nombre.toUpperCase()}.\n\nExcelente profesional y miembro de BNI Oaxaca.\n\nPuedes contactarlo aquí:\n\n${link}`;
-}
 
 function showToast(msg){
   const t = document.getElementById('toast');
@@ -366,8 +361,7 @@ function cardTemplate(m){
     </div>
     <div class="actions">
       <button class="btn btn-primary" data-action="copy-wa">Copiar WhatsApp</button>
-      <button class="btn btn-primary" data-action="copy-rec">Copiar Recomendación</button>
-      <button class="btn btn-secondary" data-action="toggle-more">Ver más opciones</button>
+      <button class="btn btn-primary" data-action="toggle-more">Opciones de Recomendación</button>
     </div>
     <div class="more-options">
       ${optionTemplates.map((fn,i)=>`
@@ -418,12 +412,10 @@ document.getElementById('results').addEventListener('click', (e)=>{
 
   if(action === 'copy-wa'){
     copyText(m.whatsapp, '✅ Enlace copiado');
-  } else if(action === 'copy-rec'){
-    copyText(defaultRecommendation(m.nombre, m.whatsapp), '✅ Recomendación copiada');
   } else if(action === 'toggle-more'){
     const panel = card.querySelector('.more-options');
     panel.classList.toggle('open');
-    btn.textContent = panel.classList.contains('open') ? 'Ocultar opciones' : 'Ver más opciones';
+    btn.textContent = panel.classList.contains('open') ? 'Ocultar opciones' : 'Opciones de Recomendación';
   } else if(action === 'copy-option'){
     const idx = Number(btn.dataset.idx);
     const text = optionTemplates[idx](m.nombre, m.whatsapp);
@@ -450,6 +442,8 @@ fetch('miembros.json')
   .then(r => r.json())
   .then(data => {
     MIEMBROS = data;
+    const giros = [...new Set(data.map(m => m.categoria).filter(Boolean))].sort();
+    CATEGORIAS = ["Todos", ...giros];
     renderChips();
     renderResults();
   })
