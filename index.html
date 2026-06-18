@@ -274,16 +274,16 @@
 let MIEMBROS = [];
 
 const optionTemplates = [
-  (n,l) => `Recomiendo ampliamente a ${n} por su profesionalismo y excelentes resultados. Ponte en contacto, te dejo su WhatsApp.\n\n${l}`,
-  (n,l) => `Por experiencia propia, puedo recomendar el trabajo de ${n} con total confianza. Aquí te comparto sus datos.\n\n${l}`,
-  (n,l) => `${n} es una persona confiable, responsable y orientada a resultados. No dudes en contactarlo(a), te dejo su información.\n\n${l}`,
-  (n,l) => `${n} destaca por su profesionalismo, calidad y atención al detalle. Te comparto su WhatsApp para que puedas contactarlo(a).\n\n${l}`,
-  (n,l) => `Recomiendo los servicios de ${n} por su compromiso y nivel de excelencia. Ponte en contacto y conoce cómo puede ayudarte.\n\n${l}`,
-  (n,l) => `Sin duda, ${n} es una excelente opción para quienes buscan confianza y resultados. Te dejo sus datos de contacto.\n\n${l}`,
-  (n,l) => `Compro los productos y servicios de ${n} y los recomiendo ampliamente por su calidad y atención. Aquí te comparto su información.\n\n${l}`,
-  (n,l) => `He probado los productos y servicios de ${n} y los recomiendo por su calidad y confiabilidad. No dudes en ponerte en contacto.\n\n${l}`,
-  (n,l) => `Cuando necesito este tipo de productos o servicios, ${n} es mi primera opción. Te dejo su WhatsApp.\n\n${l}`,
-  (n,l) => `Recomiendo a ${n} por su confianza, calidad y cumplimiento. Vale la pena conocer su trabajo, aquí te comparto sus datos.\n\n${l}`
+  (n,l,e) => `Recomiendo ampliamente a ${n} de ${e} por su profesionalismo y excelentes resultados. Ponte en contacto, te dejo su WhatsApp.\n\n${l}`,
+  (n,l,e) => `Por experiencia propia, puedo recomendar el trabajo de ${n} de ${e} con total confianza. Aquí te comparto sus datos.\n\n${l}`,
+  (n,l,e) => `${n} de ${e} es una persona confiable, responsable y orientada a resultados. No dudes en contactarlo(a), te dejo su información.\n\n${l}`,
+  (n,l,e) => `${n} de ${e} destaca por su profesionalismo, calidad y atención al detalle. Te comparto su WhatsApp para que puedas contactarlo(a).\n\n${l}`,
+  (n,l,e) => `Recomiendo los servicios de ${n} de ${e} por su compromiso y nivel de excelencia. Ponte en contacto y conoce cómo puede ayudarte.\n\n${l}`,
+  (n,l,e) => `Sin duda, ${n} de ${e} es una excelente opción para quienes buscan confianza y resultados. Te dejo sus datos de contacto.\n\n${l}`,
+  (n,l,e) => `Compro los productos y servicios de ${n} de ${e} y los recomiendo ampliamente por su calidad y atención. Aquí te comparto su información.\n\n${l}`,
+  (n,l,e) => `He probado los productos y servicios de ${n} de ${e} y los recomiendo por su calidad y confiabilidad. No dudes en ponerte en contacto.\n\n${l}`,
+  (n,l,e) => `Cuando necesito este tipo de productos o servicios, ${n} de ${e} es mi primera opción. Te dejo su WhatsApp.\n\n${l}`,
+  (n,l,e) => `Recomiendo a ${n} de ${e} por su confianza, calidad y cumplimiento. Vale la pena conocer su trabajo, aquí te comparto sus datos.\n\n${l}`
 ];
 
 function showToast(msg){
@@ -338,7 +338,7 @@ function cardTemplate(m,i){
     <div class="more-options">
       ${optionTemplates.map((fn,i)=>`
         <div class="option">
-          <p>${fn(m.nombre, link)}</p>
+          <p>${fn(m.nombre, link, m.empresa || 'su empresa')}</p>
           <button class="btn btn-secondary" data-action="copy-option" data-idx="${i}">COPIAR</button>
         </div>
       `).join('')}
@@ -379,7 +379,7 @@ document.getElementById('results').addEventListener('click', (e)=>{
     btn.textContent = panel.classList.contains('open') ? 'Ocultar opciones' : 'Opciones de Recomendación';
   } else if(action === 'copy-option'){
     const idx = Number(btn.dataset.idx);
-    const text = optionTemplates[idx](m.nombre, m.whatsapp);
+    const text = optionTemplates[idx](m.nombre, m.whatsapp, m.empresa || 'su empresa');
     copyText(text, '✅ Recomendación copiada');
   }
 });
